@@ -17,9 +17,9 @@ int main (){
     graph.addVertex("C4");
 
     cout << "Busqueda de vertice C1: " << graph.searchVertex("C1") << endl;
-    cout << "Busqueda de vertice C2: " << graph.searchVertex("C1") << endl;
-    cout << "Busqueda de vertice C3: " << graph.searchVertex("C1") << endl;
-    cout << "Busqueda de vertice C4: " << graph.searchVertex("C1") << endl;
+    cout << "Busqueda de vertice C2: " << graph.searchVertex("C2") << endl;
+    cout << "Busqueda de vertice C3: " << graph.searchVertex("C3") << endl;
+    cout << "Busqueda de vertice C4: " << graph.searchVertex("C4") << endl;
 
     graph.addEdge("C1", "C2", 2);
     graph.addEdge("C1", "C4", 3);
