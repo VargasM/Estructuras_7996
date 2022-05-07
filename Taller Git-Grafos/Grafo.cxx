@@ -17,158 +17,151 @@
 //---------------------------------------------------------------------------------------------------------
 Grafo::Grafo()
 {
-    cantidadVertices = 0;
-    cantidadAristas = 0;
-    matrizAdyacencia = NULL;
-    nombreVertices = NULL;
 }
 //---------------------------------------------------------------------------------------------------------
-Grafo::~Grafo()
+void Grafo::agregarVertice(VerticeGrafo vertice)
 {
-    if (matrizAdyacencia != NULL)
+    vertices.push_back(vertice);
+}
+//---------------------------------------------------------------------------------------------------------
+void Grafo::eliminarArista(std::string nombre)
+{
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
     {
-        for (int i = 0; i < cantidadVertices; i++)
+        std::list<VerticeGrafo::AristaGrafo>::iterator itArista;
+        for (itArista = it->aristas.begin(); itArista != it->aristas.end(); itArista++)
         {
-            delete[] matrizAdyacencia[i];
+            if (itArista->nombre == nombre)
+            {
+                it->aristas.erase(itArista);
+                return;
+            }
         }
-        delete[] matrizAdyacencia;
     }
-    if (nombreVertices != NULL)
+}
+//---------------------------------------------------------------------------------------------------------
+void Grafo::eliminarVertice(std::string nombre)
+{
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
     {
-        for (int i = 0; i < cantidadVertices; i++)
+        if (it->nombre == nombre)
         {
-            delete[] nombreVertices[i];
+            vertices.erase(it);
+            return;
         }
-        delete[] nombreVertices;
+    }
+}
+//---------------------------------------------------------------------------------------------------------
+std::list<VerticeGrafo> Grafo::getVertices()
+{
+    return vertices;
+}
+//---------------------------------------------------------------------------------------------------------
+int Grafo::getCantidadVertices()
+{
+    return vertices.size();
+}
+//---------------------------------------------------------------------------------------------------------
+int Grafo::getCantidadAristas()
+{
+    int cantidad = 0;
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
+    {
+        cantidad += it->aristas.size();
+    }
+    return cantidad;
+}
+//---------------------------------------------------------------------------------------------------------
+VerticeGrafo *Grafo::buscarVertice(std::string nombre)
+{
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
+    {
+        if (it->nombre == nombre)
+        {
+            return &(*it);
+        }
+    }
+    return NULL;
+}
+//---------------------------------------------------------------------------------------------------------
+void Grafo::agregarArista( std::string nombre, int peso, VerticeGrafo *destino)
+{
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
+    {
+        if (it->nombre == nombre)
+        {
+            it->agregarArista(nombre, peso, destino);
+            return;
+        }
+    }
+
+}
+//---------------------------------------------------------------------------------------------------------
+void Grafo::recorridoPlano()
+{
+    std::list<VerticeGrafo>::iterator it;
+    for (it = vertices.begin(); it != vertices.end(); it++)
+    {
+        std::cout << it->nombre << " ";
+    }
+    std::cout << std::endl;
+}
+//---------------------------------------------------------------------------------------------------------
+void Grafo::recorridoProfundidad(std::string vertice, std::list<std::string> &visitados)
+{
+    VerticeGrafo *verticeActual = buscarVertice(vertice);
+    if (verticeActual == NULL)
+    {
+        return;
+    }
+    visitados.push_back(verticeActual->nombre);
+    std::list<VerticeGrafo::AristaGrafo>::iterator it;
+    for (it = verticeActual->aristas.begin(); it != verticeActual->aristas.end(); it++)
+    {
+        if (std::find(visitados.begin(), visitados.end(), it->nombre) == visitados.end())
+        {
+            recorridoProfundidad(it->nombre, visitados);
+        }
     }
 }
 
 //---------------------------------------------------------------------------------------------------------
-int Grafo::cantVertices()
+void Grafo::recorridoAnchura(std::string vertice, std::list<std::string> &visitados)
 {
-    return cantidadVertices;
-}
-//---------------------------------------------------------------------------------------------------------
-int Grafo::cantAristas()
-{
-    return cantidadAristas;
-}
-//---------------------------------------------------------------------------------------------------------
-int Grafo::buscarVertices(char *nombreVertice)
-{
-    for (int i = 0; i < cantidadVertices; i++)
+    VerticeGrafo *verticeActual = buscarVertice(vertice);
+    if (verticeActual == NULL)
     {
-        if (strcmp(nombreVertice, nombreVertices[i]) == 0)
+        return;
+    }
+    visitados.push_back(verticeActual->nombre);
+    std::list<VerticeGrafo::AristaGrafo>::iterator it;
+    std::list<std::string>::iterator it2;
+    std::list<std::string> visitadosAux;
+    for (it = verticeActual->aristas.begin(); it != verticeActual->aristas.end(); it++)
+    {
+        if (std::find(visitados.begin(), visitados.end(), it->nombre) == visitados.end())
         {
-            return i;
+            visitadosAux.push_back(it->nombre);
         }
     }
-    return -1;
+    visitados.insert(visitados.end(), visitadosAux.begin(), visitadosAux.end());
 }
 //---------------------------------------------------------------------------------------------------------
-int Grafo::buscarArista(int vertice1, int vertice2)
+void imprimirRecorridoAnchura(std::string vertice, std::list<std::string>& visitadosVertices)
 {
-    return matrizAdyacencia[vertice1][vertice2];
-}
-//---------------------------------------------------------------------------------------------------------
-bool Grafo::insertarVertice(char *nombreVertice)
-{
-    if (buscarVertices(nombreVertice) == -1)
+    std::list<std::string>::iterator it;
+    for (it = visitadosVertices.begin(); it != visitadosVertices.end(); it++)
     {
-        char **nuevoNombreVertices = new char *[cantidadVertices + 1];
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            nuevoNombreVertices[i] = new char[20];
-            strcpy(nuevoNombreVertices[i], nombreVertices[i]);
-        }
-        nuevoNombreVertices[cantidadVertices] = new char[20];
-        strcpy(nuevoNombreVertices[cantidadVertices], nombreVertice);
-        cantidadVertices++;
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            delete[] nombreVertices[i];
-        }
-        delete[] nombreVertices;
-        nombreVertices = nuevoNombreVertices;
-        int **nuevaMatrizAdyacencia = new int *[cantidadVertices];
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            nuevaMatrizAdyacencia[i] = new int[cantidadVertices];
-            for (int j = 0; j < cantidadVertices; j++)
-            {
-                nuevaMatrizAdyacencia[i][j] = matrizAdyacencia[i][j];
-            }
-        }
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            delete[] matrizAdyacencia[i];
-        }
-        delete[] matrizAdyacencia;
-        matrizAdyacencia = nuevaMatrizAdyacencia;
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            matrizAdyacencia[i][cantidadVertices - 1] = 0;
-            matrizAdyacencia[cantidadVertices - 1][i] = 0;
-        }
-        return true;
+        std::cout << *it << " ";
     }
+    std::cout << std::endl;
+
 }
-//---------------------------------------------------------------------------------------------------------
-bool Grafo::insertarArista(int vertice1, int vertice2, int peso)
-{
-    if (vertice1 >= 0 && vertice1 < cantidadVertices && vertice2 >= 0 && vertice2 < cantidadVertices)
-    {
-        if (matrizAdyacencia[vertice1][vertice2] == 0)
-        {
-            matrizAdyacencia[vertice1][vertice2] = peso;
-            matrizAdyacencia[vertice2][vertice1] = peso;
-            cantidadAristas++;
-            return true;
-        }
-    }
-    return false;
-}
-//---------------------------------------------------------------------------------------------------------
-bool Grafo::eliminarVertice(int vertice)
-{
-    if (vertice >= 0 && vertice < cantidadVertices)
-    {
-        for (int i = 0; i < cantidadVertices; i++)
-        {
-            matrizAdyacencia[vertice][i] = 0;
-            matrizAdyacencia[i][vertice] = 0;
-        }
-        for (int i = vertice; i < cantidadVertices - 1; i++)
-        {
-            for (int j = 0; j < cantidadVertices; j++)
-            {
-                matrizAdyacencia[i][j] = matrizAdyacencia[i + 1][j];
-            }
-        }
-        for (int i = vertice; i < cantidadVertices - 1; i++)
-        {
-            for (int j = 0; j < cantidadVertices; j++)
-            {
-                matrizAdyacencia[j][i] = matrizAdyacencia[j][i + 1];
-            }
-        }
-        cantidadVertices--;
-        return true;
-    }
-    return false;
-}
-//---------------------------------------------------------------------------------------------------------
-bool Grafo::eliminarArista(int vertice1, int vertice2)
-{
-    if (vertice1 >= 0 && vertice1 < cantidadVertices && vertice2 >= 0 && vertice2 < cantidadVertices)
-    {
-        matrizAdyacencia[vertice1][vertice2] = 0;
-        matrizAdyacencia[vertice2][vertice1] = 0;
-        cantidadAristas--;
-        return true;
-    }
-    return false;
-}
-//--------------------------------------------------------------------------------------------------------
+
 
 #endif // __GRAFO__cxx__

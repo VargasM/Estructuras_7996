@@ -4,28 +4,41 @@
 
 #ifndef __GRAFO__H__
 #define __GRAFO__H__
+#include <iostream>
+#include "VerticeGrafo.h"
 
-class Grafo
-{
-
+//---------------------------------------------------------------------------------------------------------
+// lista de vertices
+class Grafo {
 public:
-    Grafo();
-    ~Grafo();
-    int cantVertices();
-    int cantAristas ();
-    int buscarVertices(char *nombreVertice);
-    int buscarArista(int vertice1, int vertice2);
-    bool insertarVertice(char *nombreVertice);
-    bool insertarArista(int vertice1, int vertice2, int peso);
-    bool eliminarVertice(int vertice);
-    bool eliminarArista(int vertice1, int vertice2);
 
-private:
-    int cantidadVertices;
-    int cantidadAristas;
-    int **matrizAdyacencia;
-    char **nombreVertices;
+    std::list<VerticeGrafo> vertices; ///< lista de vertices que tiene el grafo
+
+    Grafo();
+
+    void agregarVertice(VerticeGrafo vertice);
+
+    void eliminarArista(std::string nombre);
+
+    void eliminarVertice(std::string nombre);
+
+    std::list<VerticeGrafo> getVertices();
+
+    int getCantidadVertices();
+
+    int getCantidadAristas();
+
+    VerticeGrafo *buscarVertice(std::string nombre);
+
+    void agregarArista(std::string nombre, int peso, VerticeGrafo *destino);
+
+    void recorridoPlano(); //recorrido en plano
+
+    void recorridoProfundidad(std::string vertice, std::list<std::string> &visitados); //recorrido por profundidad
+
+    void recorridoAnchura(std::string vertice, std::list<std::string> &visitados); //recorre el grafo en anchura
+
+    void imprimirRecorridoAnchura(std::string vertice, std::list<std::string>& visitadosVertices); //imprime el recorrido en anchura
 };
-    
-#endif // __GRAFO__H__
-// eof Grafo.h
+
+#endif //ESTRUCTURAS_7996_GRAFO_H

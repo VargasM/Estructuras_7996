@@ -2,117 +2,72 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Grafo.cxx"
+
+#include "VerticeGrafo.cxx"
 
 int main()
 {
+    VerticeGrafo v1("C1");
+    VerticeGrafo v2("C2");
+    VerticeGrafo v3("C3");
+    VerticeGrafo v4("C4");
 
+    v1.agregarArista("C1", 2, &v2);
+    v1.agregarArista("C1", 3, &v4);
 
-    Grafo grafo;
+    v2.agregarArista("C2", 6, &v1);
+    v2.agregarArista("C2", 5, &v3);
+    v2.agregarArista("C2", 2, &v4);
+
+    v3.agregarArista("C3", 3, &v1);
+
+    v4.agregarArista("C4", 5, &v2);
+    v4.agregarArista("C4", 6, &v3);
+/*    // Aristas de C1
+    g.agregarArista("C1", "C2", 2);
+    g.agregarArista("C1", "C4", 3);
+
+    // Aristas de C2
+    g.agregarArista("C2", "C1", 6);
+    g.agregarArista("C2", "C3", 5);
+    g.agregarArista("C2", "C4", 2);
+
+    // Aristas de C3
+    g.agregarArista("C3", "C1", 3);
+
+    // Aristas de C4
+    g.agregarArista("C4", "C2", 5);
+    g.agregarArista("C4", "C3", 6);*/
+
+    std::cout <<  std::endl;
+    std::cout << "Mostrando grafo..." << std::endl;
+    v1.imprimir();
+
+    // menu de opciones para el usuario que desea realizar una accion sobre el grafo
+    std::cout << std::endl;
+    std::cout << "Menu de opciones:" << std::endl;
+    std::cout << "1. eliminar vertice" << std::endl;
+    std::cout << "2. eliminar arista" << std::endl;
+    std::cout << "3. imprimir grafo" << std::endl;
+
     int opcion;
-    int vertice1;
-    int vertice2;
-    int peso;
-    char nombreVertice[100];
-    bool salir = false;
-    while (!salir)
-    {
-        std::cout << "1. Insertar vertice" << std::endl;
-        std::cout << "2. Insertar arista" << std::endl;
-        std::cout << "3. Eliminar vertice" << std::endl;
-        std::cout << "4. Eliminar arista" << std::endl;
-        std::cout << "5. Buscar vertice" << std::endl;
-        std::cout << "6. Buscar arista" << std::endl;
-        std::cout << "7. Salir mostrando con la cantidad de vertices y la cantidad de aristas" << std::endl;
-        std::cin >> opcion;
-        switch (opcion)
-        {
-        case 1:
-            std::cout << "Ingrese el nombre del vertice: " << std::endl;
-            std::cin >> nombreVertice;
-            grafo.insertarVertice(nombreVertice);
-            break;
-        case 2:
-            std::cout << "Ingrese el vertice 1: " << std::endl;
-            std::cin >> vertice1;
-            std::cout << "Ingrese el vertice 2: " << std::endl;
-            std::cin >> vertice2;
-            std::cout << "Ingrese el peso de la arista: " << std::endl;
-            std::cin >> peso;
-            grafo.insertarArista(vertice1, vertice2, peso);
-            break;
-        case 3:
-            std::cout << "Ingrese el vertice a eliminar: " << std::endl;
-            std::cin >> vertice1;
-            grafo.eliminarVertice(vertice1);
-            break;
-        case 4:
-            std::cout << "Ingrese el vertice 1: " << std::endl;
-            std::cin >> vertice1;
-            std::cout << "Ingrese el vertice 2: " << std::endl;
-            std::cin >> vertice2;
-            grafo.eliminarArista(vertice1, vertice2);
-            break;
-        case 5:
-            std::cout << "Ingrese el vertice a buscar: " << std::endl;
-            std::cin >> nombreVertice;
-            std::cout << "El vertice " << nombreVertice << " esta en el vertice " << grafo.buscarVertices(nombreVertice) << std::endl;
-            break;
+    std::cin >> opcion;
 
-        case 6:
-            std::cout << "Ingrese el vertice 1: " << std::endl;
-            std::cin >> vertice1;
-            std::cout << "Ingrese el vertice 2: " << std::endl;
-            std::cin >> vertice2;
-            std::cout << "La arista " << vertice1 << " " << vertice2 << " tiene un peso de " << grafo.buscarArista(vertice1, vertice2) << std::endl;
-            break;
-        case 7:
-            salir = true;
-            break;
-        
-        }
-    }
-        std::ifstream archivo("Grafo.txt");
-    std::string linea;
-    std::vector<std::string> vertices;
-    std::vector<std::string> aristas;
-    std::vector<std::string> pesos;
-    std::vector<std::string>::iterator it;
-
-    if (archivo.is_open())
+    switch (opcion)
     {
-        while (getline(archivo, linea))
-        {
-            if (linea.find("c") != std::string::npos)
-            {
-                std::string vertice = linea.substr(linea.find(" ") + 3) + " ";
-                vertices.push_back(vertice);
-            }
-            else if (linea.find(" ") != std::string::npos)
-            {
-                std::string arista = linea.substr(linea.find(" ") + 0) + " ";
-                aristas.push_back(arista);
-            }
-        }
-        archivo.close();
-    }
-    else
-    {
-        std::cout << "No se pudo abrir el archivo" << std::endl;
-    }
-
-    std::cout << "Vertices: " << std::endl;
-    for (it = vertices.begin(); it != vertices.end(); ++it)
-    {
-        std::cout << *it << std::endl;
-    }
-    std::cout << "Aristas: " << std::endl;
-    for (it = aristas.begin(); it != aristas.end(); ++it)
-    {
-        std::cout << *it << std::endl;
-    }
-
-    
+    case 1:
+        std::cout << "Eliminando vertice..." << std::endl;
+        break;
+    case 2:
+        std::cout << "Eliminando arista..." << std::endl;
+        break;
+    case 3:
+        std::cout << "Imprimiendo grafo..." << std::endl;
+        v1.imprimir();
+        break;
+    default:
+        std::cout << "Opcion no valida" << std::endl;
     return 0;
+    }
 }
 
