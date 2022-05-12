@@ -44,9 +44,9 @@ template< class T, class U> bool Grafo<T,U>::insertarVertice ( T vert )
 template< class T, class U> bool Grafo<T,U>::insertarArista( T origen, T destino, U costo){
  bool res = false;
  int i_origen = buscarVertice(origen);
-  std::cout<<"Origen: "<<i_origen<<std::endl;
+  //std::cout<<"Origen: "<<i_origen<<std::endl;
  int i_destino = buscarVertice(destino);
-  std::cout<<"destino: "<<i_destino<<std::endl;
+  //std::cout<<"destino: "<<i_destino<<std::endl;
   
  if(i_origen != -1 && i_destino != -1){
       bool esta = false;
@@ -54,14 +54,14 @@ template< class T, class U> bool Grafo<T,U>::insertarArista( T origen, T destino
       for(it=aristas[i_origen].begin(); it != aristas[i_origen].end(); it++){
             if(it->first == i_destino) 
               esta = true;
-              std::cout<<"Está";
+              //std::cout<<"Está";
       }
       if (!esta){
         std::pair<int, U> *n_par = new std::pair<int, U>;
         n_par -> first = i_destino;
         n_par -> second = costo;
         aristas[i_origen].push_back(*n_par);
-        std::cout<<"Lo insertó "<<std::endl;
+        //std::cout<<"Lo insertó "<<std::endl;
         res = true;
       }
  }
@@ -86,29 +86,32 @@ template< class T, class U> bool Grafo<T,U>::eliminarVertice(T vert) {
 		bool res = false;
 		int i_vert = buscarVertice(vert);
 		if ( i_vert != -1) {
-      std::cout<<"Lo encontro "<<i_vert<<std::endl;
+      //std::cout<<"Lo encontro "<<i_vert<<std::endl;
 			typename std::vector< std::vector<std::pair<int,U> > >::iterator itA; //¿Por qué lista de pares?
       typename std::vector< std::vector<std::pair<int,U> > >::iterator posE;
 			int ind = 0;
 			for (itA = aristas.begin(); itA != aristas.end(); itA++) {
-        std::cout<<"Inicio: "<<aristas.size()<<std::endl;
         ind+=1;
 				if (ind == i_vert) {
-          std::cout<<"Lo encontro: "<<std::endl;
+          //std::cout<<"Lo encontro: "<<std::endl;
 					posE = itA;
 				} else if(!itA->empty()){ //Es destino y no origen
+          //std::cout<<itA->size()<<std::endl;
 					typename std::vector<std::pair<int,U>>::iterator it;
-          typename std::vector<std::pair<int,U>>::iterator posEE;
+          typename std::vector<std::pair<int,U>>::iterator posEE;    
+          if(itA->size()>1){
 					for (it = itA->begin(); it != itA->end(); it++) {
+            //std::cout<<"Entra"<<std::endl;
 						if (it->first == i_vert) {
 							posEE = it;
 						}
 					}
 					itA->erase(posEE); //Se elimina del vector al que es un destino
+            }
 				}
 			}
 			//aristas.erase(posE);//Si es oriden de alguna conexión, se elimina de ese vector aristas completamente
-      vertices.erase(vertices.begin()+i_vert-1);
+      vertices.erase(vertices.begin()+i_vert);
 		}
 		return res;
 	}
